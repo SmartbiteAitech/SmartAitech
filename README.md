@@ -1,2 +1,3 @@
-# SmartAitech.github.io
-SmartBite AI is a comprehensive full-stack web application that leverages artificial intelligence to revolutionize home cooking. The platform transforms available ingredients into delicious, personalized recipes while reducing food waste and simplifying meal planning.
+SmartBite AI is a fully integrated full-stack web application designed to revolutionize home cooking through the power of artificial intelligence. The platform intelligently analyzes the ingredients users already have and instantly generates personalized, chef-style recipes tailored to their tastes, dietary needs, and cooking skill level.
+
+By combining real-time AI recommendations with intuitive meal-planning tools, SmartBite AI helps users reduce food waste, save time, and enjoy healthier, more creative meals every day. Whether you’re a beginner or a seasoned cook, the platform simplifies the entire cooking experience—from discovering what to make, to planning weekly meals, to exploring new cuisines effortlessly.
