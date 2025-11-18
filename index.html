@@ -132,6 +132,24 @@
             align-items: center;
         }
 
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .user-avatar {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
         .btn {
             padding: 12px 24px;
             border-radius: 8px;
@@ -668,6 +686,101 @@
             100% { transform: translateY(0px); }
         }
 
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 500px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            position: relative;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .modal-header h2 {
+            margin: 0;
+            color: var(--dark);
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--gray);
+            transition: var(--transition);
+        }
+
+        .close-modal:hover {
+            color: var(--primary);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--dark);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid #e0e0e0;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .form-control:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.2);
+        }
+
+        .alert {
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .alert-success {
+            background-color: rgba(76, 175, 80, 0.1);
+            color: var(--primary);
+            border: 1px solid var(--primary);
+        }
+
+        .alert-error {
+            background-color: rgba(244, 67, 54, 0.1);
+            color: #f44336;
+            border: 1px solid #f44336;
+        }
+
         /* Responsive Design */
         @media (max-width: 1024px) {
             .hero h1 {
@@ -732,9 +845,8 @@
                     <li><a href="#testimonials">Testimonials</a></li>
                 </ul>
             </nav>
-            <div class="auth-buttons">
-                <button class="btn btn-outline">Login</button>
-                <button class="btn btn-primary">Get Started</button>
+            <div class="auth-buttons" id="auth-buttons">
+                <!-- This will be populated by JavaScript -->
             </div>
         </div>
     </header>
@@ -758,7 +870,7 @@
                 <h1>Transform Ingredients Into <span>Extraordinary Meals</span></h1>
                 <p>SmartBite AI uses advanced artificial intelligence to create personalized recipes from your available ingredients, dietary preferences, and cooking skill level.</p>
                 <div class="hero-actions">
-                    <button class="btn btn-primary">
+                    <button class="btn btn-primary" id="hero-generate-btn">
                         <i class="fas fa-bolt"></i> Generate Recipe
                     </button>
                     <button class="btn btn-secondary">
@@ -987,7 +1099,7 @@
             <div class="cta">
                 <h2>Ready to Transform Your Cooking?</h2>
                 <p>Join thousands of home chefs who are already using SmartBite AI to create amazing meals with less stress and waste.</p>
-                <button class="btn btn-secondary">
+                <button class="btn btn-secondary" id="cta-signup-btn">
                     <i class="fas fa-rocket"></i> Start Your Free Trial
                 </button>
             </div>
@@ -1045,22 +1157,276 @@
         </div>
     </footer>
 
+    <!-- Login Modal -->
+    <div class="modal" id="login-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Login to SmartBite</h2>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="alert alert-error" id="login-error"></div>
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="login-email">Email</label>
+                    <input type="email" id="login-email" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="login-password">Password</label>
+                    <input type="password" id="login-password" class="form-control" required>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Login</button>
+            </form>
+            <p style="text-align: center; margin-top: 15px;">Don't have an account? <a href="#" id="switch-to-signup">Sign up</a></p>
+        </div>
+    </div>
+
+    <!-- Signup Modal -->
+    <div class="modal" id="signup-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Create an Account</h2>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="alert alert-error" id="signup-error"></div>
+            <form id="signup-form">
+                <div class="form-group">
+                    <label for="signup-name">Full Name</label>
+                    <input type="text" id="signup-name" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="signup-email">Email</label>
+                    <input type="email" id="signup-email" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="signup-password">Password</label>
+                    <input type="password" id="signup-password" class="form-control" required minlength="6">
+                </div>
+                <div class="form-group">
+                    <label for="signup-confirm">Confirm Password</label>
+                    <input type="password" id="signup-confirm" class="form-control" required>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Create Account</button>
+            </form>
+            <p style="text-align: center; margin-top: 15px;">Already have an account? <a href="#" id="switch-to-login">Login</a></p>
+        </div>
+    </div>
+
     <script>
-        // Header scroll effect
-        window.addEventListener('scroll', function() {
-            const header = document.querySelector('header');
-            if (window.scrollY > 50) {
-                header.classList.add('scrolled');
-            } else {
-                header.classList.remove('scrolled');
+        // DOM Elements
+        const loginBtn = document.getElementById('login-btn');
+        const signupBtn = document.getElementById('signup-btn');
+        const loginModal = document.getElementById('login-modal');
+        const signupModal = document.getElementById('signup-modal');
+        const closeModalBtns = document.querySelectorAll('.close-modal');
+        const switchToSignup = document.getElementById('switch-to-signup');
+        const switchToLogin = document.getElementById('switch-to-login');
+        const authButtons = document.getElementById('auth-buttons');
+        const loginForm = document.getElementById('login-form');
+        const signupForm = document.getElementById('signup-form');
+        const loginError = document.getElementById('login-error');
+        const signupError = document.getElementById('signup-error');
+        const heroGenerateBtn = document.getElementById('hero-generate-btn');
+        const ctaSignupBtn = document.getElementById('cta-signup-btn');
+        const generateBtn = document.getElementById('generate-btn');
+        const ingredientInput = document.getElementById('ingredient-input');
+        const demoOutput = document.getElementById('demo-output');
+
+        // User management
+        let currentUser = null;
+        let users = JSON.parse(localStorage.getItem('smartBiteUsers')) || [];
+
+        // Initialize the app
+        function initApp() {
+            checkLoggedInUser();
+            updateAuthButtons();
+            setupEventListeners();
+        }
+
+        // Check if user is logged in
+        function checkLoggedInUser() {
+            const savedUser = localStorage.getItem('smartBiteCurrentUser');
+            if (savedUser) {
+                currentUser = JSON.parse(savedUser);
             }
+        }
+
+        // Update authentication buttons based on login status
+        function updateAuthButtons() {
+            authButtons.innerHTML = '';
+            
+            if (currentUser) {
+                // User is logged in
+                const firstName = currentUser.name.split(' ')[0];
+                const initial = currentUser.name.charAt(0).toUpperCase();
+                
+                authButtons.innerHTML = `
+                    <div class="user-info">
+                        <div class="user-avatar">${initial}</div>
+                        <span>Hello, ${firstName}</span>
+                    </div>
+                    <button class="btn btn-outline" id="logout-btn">Logout</button>
+                `;
+                
+                document.getElementById('logout-btn').addEventListener('click', logout);
+            } else {
+                // User is not logged in
+                authButtons.innerHTML = `
+                    <button class="btn btn-outline" id="login-btn">Login</button>
+                    <button class="btn btn-primary" id="signup-btn">Sign Up</button>
+                `;
+                
+                // Re-attach event listeners to the new buttons
+                document.getElementById('login-btn').addEventListener('click', () => openModal(loginModal));
+                document.getElementById('signup-btn').addEventListener('click', () => openModal(signupModal));
+            }
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            // Demo functionality
+            generateBtn.addEventListener('click', generateRecipe);
+            
+            // CTA button
+            ctaSignupBtn.addEventListener('click', () => openModal(signupModal));
+            
+            // Hero button
+            heroGenerateBtn.addEventListener('click', () => {
+                document.querySelector('.ai-demo').scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        }
+
+        // Login function
+        function login(email, password) {
+            const user = users.find(u => u.email === email && u.password === password);
+            
+            if (user) {
+                currentUser = user;
+                localStorage.setItem('smartBiteCurrentUser', JSON.stringify(user));
+                updateAuthButtons();
+                closeModal(loginModal);
+                showAlert('Login successful!', 'success');
+                return true;
+            } else {
+                showAlert('Invalid email or password', 'error', loginError);
+                return false;
+            }
+        }
+
+        // Signup function
+        function signup(name, email, password, confirmPassword) {
+            // Check if passwords match
+            if (password !== confirmPassword) {
+                showAlert('Passwords do not match', 'error', signupError);
+                return false;
+            }
+            
+            // Check if user already exists
+            if (users.find(u => u.email === email)) {
+                showAlert('User with this email already exists', 'error', signupError);
+                return false;
+            }
+            
+            // Create new user
+            const newUser = {
+                id: Date.now().toString(),
+                name,
+                email,
+                password,
+                joined: new Date().toISOString()
+            };
+            
+            users.push(newUser);
+            localStorage.setItem('smartBiteUsers', JSON.stringify(users));
+            
+            // Auto-login the new user
+            currentUser = newUser;
+            localStorage.setItem('smartBiteCurrentUser', JSON.stringify(newUser));
+            updateAuthButtons();
+            closeModal(signupModal);
+            showAlert('Account created successfully!', 'success');
+            return true;
+        }
+
+        // Logout function
+        function logout() {
+            currentUser = null;
+            localStorage.removeItem('smartBiteCurrentUser');
+            updateAuthButtons();
+            showAlert('You have been logged out', 'success');
+        }
+
+        // Show alert message
+        function showAlert(message, type, element = null) {
+            if (element) {
+                element.textContent = message;
+                element.style.display = 'block';
+                element.className = `alert alert-${type}`;
+            } else {
+                // Create a temporary alert at the top of the page
+                const alert = document.createElement('div');
+                alert.className = `alert alert-${type}`;
+                alert.textContent = message;
+                alert.style.position = 'fixed';
+                alert.style.top = '80px';
+                alert.style.left = '50%';
+                alert.style.transform = 'translateX(-50%)';
+                alert.style.zIndex = '1001';
+                alert.style.maxWidth = '90%';
+                
+                document.body.appendChild(alert);
+                
+                setTimeout(() => {
+                    alert.remove();
+                }, 3000);
+            }
+        }
+
+        // Modal Functions
+        function openModal(modal) {
+            modal.style.display = 'flex';
+            // Clear any error messages
+            loginError.style.display = 'none';
+            signupError.style.display = 'none';
+        }
+
+        function closeModal(modal) {
+            modal.style.display = 'none';
+        }
+
+        // Event Listeners for Modals
+        document.addEventListener('DOMContentLoaded', function() {
+            // These will be set by updateAuthButtons after initApp runs
         });
 
-        // Demo functionality
-        document.getElementById('generate-btn').addEventListener('click', function() {
-            const ingredientInput = document.getElementById('ingredient-input');
-            const demoOutput = document.getElementById('demo-output');
-            
+        closeModalBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                const modal = this.closest('.modal');
+                closeModal(modal);
+            });
+        });
+
+        switchToSignup.addEventListener('click', (e) => {
+            e.preventDefault();
+            closeModal(loginModal);
+            openModal(signupModal);
+        });
+
+        switchToLogin.addEventListener('click', (e) => {
+            e.preventDefault();
+            closeModal(signupModal);
+            openModal(loginModal);
+        });
+
+        // Close modal when clicking outside
+        window.addEventListener('click', (e) => {
+            if (e.target === loginModal) closeModal(loginModal);
+            if (e.target === signupModal) closeModal(signupModal);
+        });
+
+        // Generate recipe function
+        function generateRecipe() {
             if (ingredientInput.value.trim() === '') {
                 demoOutput.innerHTML = `
                     <div style="text-align: center; padding: 40px; color: var(--gray);">
@@ -1119,6 +1485,36 @@
                     </div>
                 `;
             }, 2000);
+        }
+
+        // Login Form Submission
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            
+            login(email, password);
+        });
+
+        // Signup Form Submission
+        signupForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const name = document.getElementById('signup-name').value;
+            const email = document.getElementById('signup-email').value;
+            const password = document.getElementById('signup-password').value;
+            const confirm = document.getElementById('signup-confirm').value;
+            
+            signup(name, email, password, confirm);
+        });
+
+        // Header scroll effect
+        window.addEventListener('scroll', function() {
+            const header = document.querySelector('header');
+            if (window.scrollY > 50) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
         });
 
         // Smooth scrolling for navigation links
@@ -1134,6 +1530,26 @@
                 });
             });
         });
+
+        // Initialize the application
+        initApp();
     </script>
 </body>
 </html>
+           
+
+        
+            
+           
+        
+       
+           
+        
+           
+        
+
+        
+            
+     
+        
+        
